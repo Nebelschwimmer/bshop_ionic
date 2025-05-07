@@ -14,48 +14,72 @@
 			</ion-header>
 
 			<div id="container">
-				{{ bookList }}
-				<strong>Ready to create an app?</strong>
-				<p>
-					Start with Ionic
-					<a
-						target="_blank"
-						rel="noopener noreferrer"
-						href="https://ionicframework.com/docs/components"
-						>UI Components</a
-					>
-				</p>
+				<ion-grid>
+					<ion-row>
+						<ion-col v-for="(book, i) in bookList" :key="i">
+							<template v-if="!loading">
+								<ion-card>
+									<ion-card-header>
+										<ion-card-title>{{ book.title }}</ion-card-title>
+										<ion-card-subtitle>{{
+											book.authorName || "N/A"
+										}}</ion-card-subtitle>
+									</ion-card-header>
+
+									<ion-card-content>
+										{{ book.summary || "N/A" }}
+									</ion-card-content>
+								</ion-card>
+							</template>
+							<div v-else>
+								<ion-spinner></ion-spinner>
+							</div>
+						</ion-col>
+					</ion-row>
+				</ion-grid>
 			</div>
+			<ion-fab slot="fixed" vertical="top" horizontal="end">
+				<ion-fab-button>
+					<ion-icon :icon="add"></ion-icon>
+				</ion-fab-button>
+			</ion-fab>
 		</ion-content>
 	</ion-page>
 </template>
 
 <script setup lang="ts">
+import { add } from 'ionicons/icons';
 import {
 	IonContent,
 	IonHeader,
 	IonPage,
 	IonTitle,
 	IonToolbar,
+	IonCard,
+	IonCardContent,
+	IonCardHeader,
+	IonCardTitle,
+	IonCardSubtitle,
+	IonSpinner,
+	IonCol,
+	IonGrid,
+	IonRow,
+	IonFab,
+  IonFabButton,
 } from "@ionic/vue";
 import { useBookStore } from "@/stores/bookStore";
 import { storeToRefs } from "pinia";
 const { bookList, loading } = storeToRefs(useBookStore());
 const { fetchBookList } = useBookStore();
-onMounted( async () => {
-  await fetchBookList();
+onMounted(async () => {
+	await fetchBookList();
 });
 </script>
 
 <style scoped>
 #container {
 	text-align: center;
-
-	position: absolute;
-	left: 0;
-	right: 0;
-	top: 50%;
-	transform: translateY(-50%);
+  margin-top: 6rem;
 }
 
 #container strong {
@@ -74,5 +98,11 @@ onMounted( async () => {
 
 #container a {
 	text-decoration: none;
+}
+
+.cards-grid {
+	display: grid;
+	grid-template-columns: minmax(100px, 1fr);
+	gap: 1rem;
 }
 </style>

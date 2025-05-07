@@ -12,9 +12,10 @@ declare global {
 		id: number;
 		title: string;
 		releaseYear: number;
-		price: number;
+		price?: number;
 		cover?: string;
 		authorName: string;
+        summary: string
 	}
 	interface IBookDetail {
 		id: number;
